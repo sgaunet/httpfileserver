@@ -1,8 +1,8 @@
-project_name: "k8see-importer"
-# before:
-  # hooks:
+project_name: "httpfileserver"
+before:
+  hooks:
     # You may remove this if you don't use go modules.
-    #- go mod download
+    - go mod download
     # you may remove this if you don't need go generate
     #- go generate ./...
 builds:

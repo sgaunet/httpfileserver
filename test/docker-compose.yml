@@ -1,0 +1,9 @@
+version: '3.2'
+
+services:
+  fileserver:
+    image: sgaunet/httpfileserver:latest
+    volumes:
+      - /home/sylvain:/mount
+    ports:
+      - 8081:8081

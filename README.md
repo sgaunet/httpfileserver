@@ -3,6 +3,12 @@
 A simple webserver in Golang to expose a directory by http.
 You can use the binary (releases) or the docker image (from scratch, it's a multi-arch image).
 
+There is a possibility to add a basic auth by defining environment variable :
+
+* HTTP_USER
+* HTTP_PASSWORD
+
+
 # Build
 
 This project is using :

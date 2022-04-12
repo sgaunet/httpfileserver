@@ -1,6 +1,8 @@
 package main
 
 import (
+	"crypto/sha256"
+	"crypto/subtle"
 	"flag"
 	"fmt"
 	"net/http"
@@ -36,6 +38,12 @@ func initTrace(debugLevel string) {
 	}
 }
 
+type App struct {
+	DirToParse string
+	User       string
+	Password   string
+}
+
 func main() {
 	var dirToParse string
 	var port int
@@ -55,6 +63,48 @@ func main() {
 	}
 
 	addr := fmt.Sprintf(":%d", port)
-	fs := http.FileServer(http.Dir(dirToParse))
-	log.Fatal(http.ListenAndServe(addr, fs))
+
+	app := App{
+		DirToParse: dirToParse,
+		User:       os.Getenv("HTTP_USER"),
+		Password:   os.Getenv("HTTP_PASSWORD"),
+	}
+
+	if app.User != "" && app.Password != "" {
+		log.Infoln("Launch webserver with basic auth")
+		http.Handle("/", app.basicAuth(app.exposeDir()))
+		log.Fatal(http.ListenAndServe(addr, nil))
+	} else {
+		log.Infoln("Launch webserver without auth")
+		fs := http.FileServer(http.Dir(dirToParse))
+		log.Fatal(http.ListenAndServe(addr, fs))
+	}
+}
+
+func (a *App) exposeDir() http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.FileServer(http.Dir(a.DirToParse)).ServeHTTP(w, r)
+	})
+}
+func (a *App) basicAuth(next http.HandlerFunc) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		username, password, ok := r.BasicAuth()
+		if ok {
+			usernameHash := sha256.Sum256([]byte(username))
+			passwordHash := sha256.Sum256([]byte(password))
+			expectedUsernameHash := sha256.Sum256([]byte(a.User))
+			expectedPasswordHash := sha256.Sum256([]byte(a.Password))
+
+			usernameMatch := (subtle.ConstantTimeCompare(usernameHash[:], expectedUsernameHash[:]) == 1)
+			passwordMatch := (subtle.ConstantTimeCompare(passwordHash[:], expectedPasswordHash[:]) == 1)
+
+			if usernameMatch && passwordMatch {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+
+		w.Header().Set("WWW-Authenticate", `Basic realm="restricted", charset="UTF-8"`)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+	})
 }

@@ -2,5 +2,19 @@
     <body>
         The default command of the image expose /mount (in the container).<br>
         You need to mount a directory in /mount of the container to expose files/folders.
+
+        docker-compose example :
+
+        <pre>
+version: '3.2'
+
+services:
+  fileserver:
+    image: sgaunet/httpfileserver:latest
+    volumes:
+      - /home/sylvain:/mount
+    ports:
+      - 8081:8081
+        </pre>
     </body>
 </html>

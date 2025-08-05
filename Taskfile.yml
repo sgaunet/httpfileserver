@@ -2,7 +2,7 @@
 version: '3'
 vars:
   BINFILE: httpfileserver
-  IMG: sgaunet/httpfileserver:latest
+  IMG: ghcr.io/sgaunet/httpfileserver:latest
 
 tasks:
   default:

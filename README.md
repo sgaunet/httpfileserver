@@ -1,7 +1,11 @@
 [![GitHub release](https://img.shields.io/github/release/sgaunet/httpfileserver.svg)](https://github.com/sgaunet/httpfileserver/releases/latest)
 [![Go Report Card](https://goreportcard.com/badge/github.com/sgaunet/httpfileserver)](https://goreportcard.com/report/github.com/sgaunet/httpfileserver)
 ![GitHub Downloads](https://img.shields.io/github/downloads/sgaunet/httpfileserver/total)
-[![Maintainability](https://api.codeclimate.com/v1/badges/55a5f8d4ec1cc30b3f82/maintainability)](https://codeclimate.com/github/sgaunet/httpfileserver/maintainability)
+![Coverage](https://raw.githubusercontent.com/wiki/sgaunet/httpfileserver/coverage-badge.svg)
+[![coverage](https://github.com/sgaunet/httpfileserver/actions/workflows/coverage.yml/badge.svg)](https://github.com/sgaunet/httpfileserver/actions/workflows/coverage.yml)
+[![Snapshot Build](https://github.com/sgaunet/httpfileserver/actions/workflows/snapshot.yml/badge.svg)](https://github.com/sgaunet/httpfileserver/actions/workflows/snapshot.yml)
+[![Release Build](https://github.com/sgaunet/httpfileserver/actions/workflows/release.yml/badge.svg)](https://github.com/sgaunet/httpfileserver/actions/workflows/release.yml)
+[![License](https://img.shields.io/github/license/sgaunet/httpfileserver.svg)](LICENSE)
 
 
 # httpfileserver

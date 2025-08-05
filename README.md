@@ -3,6 +3,7 @@
 ![GitHub Downloads](https://img.shields.io/github/downloads/sgaunet/httpfileserver/total)
 ![Coverage](https://raw.githubusercontent.com/wiki/sgaunet/httpfileserver/coverage-badge.svg)
 [![coverage](https://github.com/sgaunet/httpfileserver/actions/workflows/coverage.yml/badge.svg)](https://github.com/sgaunet/httpfileserver/actions/workflows/coverage.yml)
+[![linter](https://github.com/sgaunet/httpfileserver/actions/workflows/linter.yml/badge.svg)](https://github.com/sgaunet/httpfileserver/actions/workflows/linter.yml)
 [![Snapshot Build](https://github.com/sgaunet/httpfileserver/actions/workflows/snapshot.yml/badge.svg)](https://github.com/sgaunet/httpfileserver/actions/workflows/snapshot.yml)
 [![Release Build](https://github.com/sgaunet/httpfileserver/actions/workflows/release.yml/badge.svg)](https://github.com/sgaunet/httpfileserver/actions/workflows/release.yml)
 [![License](https://img.shields.io/github/license/sgaunet/httpfileserver.svg)](LICENSE)

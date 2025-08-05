@@ -1,3 +1,4 @@
+// Package main implements a simple HTTP file server with optional basic authentication.
 package main
 
 import (
@@ -7,16 +8,25 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
 
+const (
+	defaultPort         = 8081
+	minPort             = 1024
+	serverReadTimeout   = 30 * time.Second
+	serverWriteTimeout  = 30 * time.Second
+	serverIdleTimeout   = 120 * time.Second
+)
+
 var log = logrus.New()
 
-// initTrace initialize log instance with the level in parameter
+// initTrace initialize log instance with the level in parameter.
 func initTrace(debugLevel string) {
 	// Log as JSON instead of the default ASCII formatter.
-	//log.SetFormatter(&log.JSONFormatter{})
+	// log.SetFormatter(&log.JSONFormatter{})
 	// log.SetFormatter(&log.TextFormatter{
 	// 	DisableColors: true,
 	// 	FullTimestamp: true,
@@ -38,6 +48,7 @@ func initTrace(debugLevel string) {
 	}
 }
 
+// App represents the application configuration.
 type App struct {
 	DirToParse string
 	User       string
@@ -50,14 +61,14 @@ func main() {
 	initTrace("info")
 
 	flag.StringVar(&dirToParse, "d", "", "Directory to parse")
-	flag.IntVar(&port, "p", 8081, "Port of the webserver")
+	flag.IntVar(&port, "p", defaultPort, "Port of the webserver")
 	flag.Parse()
 
 	if dirToParse == "" {
 		log.Errorln("specify a directory to expose")
 		os.Exit(1)
 	}
-	if port < 1024 {
+	if port < minPort {
 		log.Errorln("Port cannot be under 1024")
 		os.Exit(1)
 	}
@@ -70,15 +81,22 @@ func main() {
 		Password:   os.Getenv("HTTP_PASSWORD"),
 	}
 
+	server := &http.Server{
+		Addr:         addr,
+		ReadTimeout:  serverReadTimeout,
+		WriteTimeout: serverWriteTimeout,
+		IdleTimeout:  serverIdleTimeout,
+	}
+
 	if app.User != "" && app.Password != "" {
 		log.Infoln("Launch webserver with basic auth")
 		http.Handle("/", app.basicAuth(app.exposeDir()))
-		log.Fatal(http.ListenAndServe(addr, nil))
-	} else {
-		log.Infoln("Launch webserver without auth")
-		fs := http.FileServer(http.Dir(dirToParse))
-		log.Fatal(http.ListenAndServe(addr, fs))
+		log.Fatal(server.ListenAndServe())
 	}
+	
+	log.Infoln("Launch webserver without auth")
+	server.Handler = http.FileServer(http.Dir(dirToParse))
+	log.Fatal(server.ListenAndServe())
 }
 
 func (a *App) exposeDir() http.HandlerFunc {

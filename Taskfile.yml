@@ -16,12 +16,27 @@ tasks:
   build:
     cmds:
       - go mod download
-      - CGO_ENABLED=0 go build .
+      - CGO_ENABLED=0 go build ./cmd/httpfileserver
+
+  test:
+    cmds:
+      - go test -v ./...
+
+  coverage:
+    cmds:
+      - go test -coverpkg=./... -coverprofile=profile.cov ./...
+      - go tool cover -html=profile.cov -o coverage.html
+      - go tool cover -func profile.cov
+
+  test-and-lint:
+    cmds:
+      - task: test
+      - task: linter
 
   snapshot:
     cmds:
-      - GITLAB_TOKEN="" goreleaser --clean --snapshot
+      - GITLAB_TOKEN="" goreleaser release --clean --snapshot
     
   release:
     cmds:
-      - GITLAB_TOKEN="" goreleaser --clean
+      - GITLAB_TOKEN="" goreleaser release --clean
